@@ -119,122 +119,139 @@ return {
 		},
 	},
 	-- 评论插件，显示todo, warn等等，同时实现快速注释块插入
-	-- {
-	-- 	"numToStr/Comment.nvim",
-	-- 	dependencies = { "folke/which-key.nvim" },
-	-- 	config = function()
-	-- 		local comment = require("Comment")
-	-- 		comment.setup({
-	-- 			padding = true,
-	-- 			sticky = true,
-	-- 			ignore = "^$",
-	-- 			toggler = {
-	-- 				line = "gcc", -- 行注释
-	-- 				block = "gbc", -- 块注释
-	-- 			},
-	-- 			opleader = {
-	-- 				line = "gc", -- 行操作
-	-- 				block = "gb", -- 块操作
-	-- 			},
-
-	-- 			-- 额外映射
-	-- 			extra = {
-	-- 				above = "gcO", -- 在上面添加注释
-	-- 				below = "gco", -- 在下面添加注释
-	-- 				eol = "gcA", -- 在行尾添加注释
-	-- 			},
-	-- 			mappings = {
-	-- 				basic = true,
-	-- 				extra = true,
-	-- 			},
-	-- 			---Function to call before (un)comment
-	-- 			pre_hook = nil,
-	-- 			---Function to call after (un)comment
-	-- 			post_hook = nil,
-	-- 		})
-	-- 	end,
-	-- },
+	{
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = {
+			-- 语义化配色 + 仅关键词/文字染色（注释符号 //、# 保持原色，不显突兀）
+			highlight = {
+				before = "", -- 不染注释符号
+				keyword = "wide", -- 关键词 + 前后字符一起加底色，最醒目
+				after = "fg", -- 冒号后的描述文字也染色
+			},
+			-- 用独立的高对比度 hex 色覆盖默认映射，
+			-- 不依赖 Diagnostic* 系列，跨主题表现一致
+			colors = {
+				error = { "DiagnosticError", "ErrorMsg", "#DC2626" }, -- FIX 系列：Bug 红
+				warning = { "DiagnosticWarn", "WarningMsg", "#FB923C" }, -- WARN 系列：告警橙
+				info = { "DiagnosticInfo", "#60A5FA" }, -- TODO：行动蓝
+				hint = { "DiagnosticHint", "#34D399" }, -- NOTE：中性青绿
+				default = { "Identifier", "#A78BFA" }, -- PERF：性能紫
+				test = { "Identifier", "#F472B6" }, -- TEST：测试品红
+			},
+			keywords = {
+				FIX = {
+					icon = " ",
+					color = "error", -- 红
+					alt = { "FIXME", "BUG", "FIXIT", "ISSUE" },
+				},
+				TODO = { icon = " ", color = "info" }, -- 蓝
+				HACK = { icon = " ", color = "warning" }, -- 橙
+				WARN = {
+					icon = " ",
+					color = "warning", -- 橙
+					alt = { "WARNING", "XXX" },
+				},
+				PERF = {
+					icon = " ",
+					color = "default", -- 紫
+					alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" },
+				},
+				NOTE = {
+					icon = " ",
+					color = "hint", -- 青
+					alt = { "INFO" },
+				},
+				TEST = {
+					icon = "⏲ ",
+					color = "test", -- 品红
+					alt = { "TESTING", "PASSED", "FAILED" },
+				},
+			},
+		},
+	},
 	-- mini icon
 	{
 		"nvim-mini/mini.nvim",
 		version = "*",
 	},
+	-- telescope 在 rgrep 时经常崩溃，使用 fzf-lua 代替
 	-- telescope 实现文件/目录（按文件名/关键词）的模糊查询，文件预览，vim commands的查询等等
-	{
-		"nvim-telescope/telescope.nvim",
-		tag = "v0.2.1",
-		event = "UiEnter",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			{
-				"nvim-telescope/telescope-fzf-native.nvim",
-				build = "make",
-			},
-		},
-		-- 只有在按键触发式加载，最懒加载
-		keys = {
-			{
-				"<leader>ff",
-				"<cmd>Telescope find_files<cr>",
-				desc = "Find Files",
-			},
-			{
-				"<leader>fw",
-				"<cmd>Telescope live_grep<cr>",
-				desc = "Find Words",
-			},
-			{
-				"<leader>fb",
-				"<cmd>Telescope buffers<cr>",
-				desc = "Find Buffers",
-			},
-			{
-				"<leader>fh",
-				"<cmd>Telescope help_tags<cr>",
-				desc = "Help Tags",
-			},
-		},
-		config = function()
-			vim.keymap.set("n", "<leader>fr", function()
-				require("telescope.builtin").find_files({
-					cwd = vim.fn.stdpath("config"),
-				})
-			end)
-			require("telescope").load_extension("fidget")
-			require("telescope").setup({
-				defaults = {
-					file_ignore_patterns = { -- 默认忽略列表
-						"node_modules",
-						".git", -- 可以根据需要调整
-					},
-					-- 启用隐藏文件
-					hidden = true,
-				},
-				pickers = {
-					find_files = {
-						-- 查找文件时包含隐藏文件
-						hidden = true,
-						-- 或者更精确的控制
-						find_command = {
-							"rg",
-							"--files",
-							"--hidden",
-							"--glob",
-							"!**/.git/*",
-							"--glob",
-							"!**/node_modules/*",
-						},
-					},
-					live_grep = {
-						-- 实时搜索时包含隐藏文件
-						additional_args = function()
-							return { "--hidden" }
-						end,
-					},
-				},
-			})
-		end,
-	},
+	-- {
+	-- 	"nvim-telescope/telescope.nvim",
+	-- 	tag = "v0.2.1",
+	-- 	event = "UiEnter",
+	-- 	dependencies = {
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		{
+	-- 			"nvim-telescope/telescope-fzf-native.nvim",
+	-- 			build = "make",
+	-- 		},
+	-- 	},
+	-- 	-- 只有在按键触发式加载，最懒加载
+	-- 	keys = {
+	-- 		{
+	-- 			"<leader>ff",
+	-- 			"<cmd>Telescope find_files<cr>",
+	-- 			desc = "Find Files",
+	-- 		},
+	-- 		{
+	-- 			"<leader>fw",
+	-- 			"<cmd>Telescope live_grep<cr>",
+	-- 			desc = "Find Words",
+	-- 		},
+	-- 		{
+	-- 			"<leader>fb",
+	-- 			"<cmd>Telescope buffers<cr>",
+	-- 			desc = "Find Buffers",
+	-- 		},
+	-- 		{
+	-- 			"<leader>fh",
+	-- 			"<cmd>Telescope help_tags<cr>",
+	-- 			desc = "Help Tags",
+	-- 		},
+	-- 	},
+	-- 	config = function()
+	-- 		vim.keymap.set("n", "<leader>fr", function()
+	-- 			require("telescope.builtin").find_files({
+	-- 				cwd = vim.fn.stdpath("config"),
+	-- 			})
+	-- 		end)
+	-- 		require("telescope").load_extension("fidget")
+	-- 		require("telescope").setup({
+	-- 			defaults = {
+	-- 				file_ignore_patterns = { -- 默认忽略列表
+	-- 					"node_modules",
+	-- 					".git", -- 可以根据需要调整
+	-- 				},
+	-- 				-- 启用隐藏文件
+	-- 				hidden = true,
+	-- 			},
+	-- 			pickers = {
+	-- 				find_files = {
+	-- 					-- 查找文件时包含隐藏文件
+	-- 					hidden = true,
+	-- 					-- 或者更精确的控制
+	-- 					find_command = {
+	-- 						"rg",
+	-- 						"--files",
+	-- 						"--hidden",
+	-- 						"--glob",
+	-- 						"!**/.git/*",
+	-- 						"--glob",
+	-- 						"!**/node_modules/*",
+	-- 					},
+	-- 				},
+	-- 				live_grep = {
+	-- 					-- 实时搜索时包含隐藏文件
+	-- 					additional_args = function()
+	-- 						return { "--hidden" }
+	-- 					end,
+	-- 				},
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
 	-- gitsigns显示git变动
 	{
 		"lewis6991/gitsigns.nvim",
@@ -424,7 +441,7 @@ return {
 					show_tab_indicators = true,
 
 					-- 分隔符样式
-					separator_style = "slant", -- 可选: "slant" | "slope" | "thick" | "thin" | { 'any', 'any' }
+					separator_style = "thin", -- 可选: "slant" | "slope" | "thick" | "thin" | { 'any', 'any' }
 
 					-- 悬停
 					hover = {
@@ -441,6 +458,20 @@ return {
 					--   -- 按修改时间排序
 					--   return buffer_a.modified > buffer_b.modified
 					-- end,
+				},
+				-- 高亮配置（themable = true 时生效）
+				highlights = {
+					-- 当前活动 buffer 的文件名：亮青色 + 加粗
+					buffer_selected = {
+						fg = "#89dceb",
+						bold = true,
+						italic = false,
+					},
+					-- 非活动 buffer 的文件名：暗灰
+					buffer_visible = {
+						fg = "#6c7086",
+						italic = false,
+					},
 				},
 			})
 		end,

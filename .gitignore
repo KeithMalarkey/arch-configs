@@ -1,71 +1,167 @@
-./autostart/
-./glow/
-./ktimezonedrc
-./QtProject.conf
-./baloofilerc
-./google-chrome/
-./kwin*
-./go/
-./Kvantum/
-./Electron/
-./matugen/
-./quickshell/
-./bluedevilglobalrc
-./rofi/
-./bottom/
-./gtk-*/
-./cava/
-./session/
-./simple-update-notifier/
-./strawberry/
-./systemd/
-./clash-verge/
-./gtkrc*
-./hypr.bak/
-./Code/
-./code-flags.conf
-./fcitx*/
-./nautilus/
-./noctalia/
-./nwg-look/
-./chrome-flags.conf
-./dconf/
-./darklyrc
-./dolphinrc
-./eww/
-./fontconfig/
-./foot/
-./fuzzel/
-./ibus/
-./illogical-impulse/
-./kde-material-you-colors/
-./kdedefaults/
-./kactivitymanagerdrc
-./kc*
-./kdeglobals
-./kglobalshortcutsrc
-./kioslaverc
-./konsolerc
-./ktimezonedrc
-./libaccounts-glib/
-./mihomo-party/
-./mimeapps.list
-./mpv/
-./plasma-workspace/
-./plasma-localerc
-./plasmarc
-./procps/
-./pulse/
-./qalculate/
-./thorium-flags.conf
-./Trolltech.conf
-./user-dirs.dirs.*
-./thorium-flags.conf
-./Trolltech.conf
-./user-dirs.dirs.*
-./xsettingsd/
-./xdg-desktop-portal/
-./wlogout/
-./yay/
-./yazi/
-./zshrc.d/
+# ==========================
+# 通用备份目录
+# ==========================
+autostart/
+glow/
+strawberry/
+simple-update-notifier/
+eww/
+qalculate/
+thorium-flags.conf
+chrome-flags.conf
+code-flags.conf
+darklyrc
+session/
+yazi/
+yay/
+go/
+
+# ==========================
+# 桌面环境 / 机器相关
+# ==========================
+# Qt / KDE / Plasma
+QtProject.conf
+baloofilerc
+Trolltech.conf
+Kvantum/
+kdedefaults/
+kdeglobals
+kglobalshortcutsrc
+kioslaverc
+konsolerc
+kactivitymanagerdrc
+kc*
+plasma-workspace/
+plasma-localerc
+plasmarc
+user-dirs.dirs.*
+mimeapps.list
+
+# 显示器 / 窗口管理（机器强相关）
+kwin*
+kwinoutputconfig.json
+nwg-displays/
+xsettingsd/
+xdg-desktop-portal/
+fontconfig/
+
+# GTK 主题
+gtk-*/
+gtkrc*
+dconf/
+bluedevilglobalrc
+dolphinrc
+
+# ==========================
+# Compositor / 启动器 / 状态栏
+# ==========================
+# 用户已决定不用的
+foot/
+waybar/
+cava/
+
+# 其他 compositor / 启动器配置
+hypr.bak/
+illogical-impulse/
+noctalia/
+quickshell/
+fuzzel/
+rofi/
+nwg-look/
+kde-material-you-colors/
+
+# ==========================
+# 输入法
+# ==========================
+fcitx*/
+ibus/
+
+# ==========================
+# 媒体 / 浏览器 / IDE（敏感/大文件）
+# ==========================
+google-chrome/
+Code/
+Electron/
+SPlayer/
+obs-studio/
+Pinta/
+mihomo-party/
+clash-verge/
+io.github.clash-verge-rev.clash-verge-rev/
+fcitx5/
+fcitx/
+songrec/
+
+# ==========================
+# 终端 / Shell（保留）
+# ==========================
+# fish/ — 同步
+# tmux/ — 同步
+# nvim/ — 同步（但忽略运行时缓存）
+
+# ==========================
+# 系统级
+# ==========================
+systemd/
+procps/
+pulse/
+libaccounts-glib/
+bottom/
+
+# ==========================
+# nvim 运行时缓存
+# ==========================
+nvim/spell/
+nvim/undo/
+nvim/plugin/
+nvim/lazy-lock.json
+nvim/.luarocks/
+nvim/.cache/
+
+# ==========================
+# tmux 插件管理器
+# ==========================
+tmux/plugins/
+tmux/resurrect/
+tmux/.collab/
+
+# ==========================
+# opencode（敏感：含 API key、session）
+# ==========================
+mozilla/
+opencode/
+claude.json
+claude.json.*
+codex/
+
+# ==========================
+# mako / mpv / 杂项
+# ==========================
+
+mpv/
+matugen/
+plasma-workspace/
+
+# ==========================
+# 安全红线：绝不同步
+# ==========================
+# API key / token / 凭据扫描
+**/api_key*
+**/api-token*
+**/*secret*
+**/*password*
+**/.env
+**/.env.*
+**/credentials*
+**/*.pem
+**/*.key
+**/subscription*
+
+# 工具
+zshrc.d/    # 含机器相关 alias
+user-dirs.dirs
+user-dirs.locale
+session/
+
+telegram-desktop/
+zathurarc

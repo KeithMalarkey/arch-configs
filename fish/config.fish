@@ -23,11 +23,9 @@ if status is-interactive
     alias celar "printf '\033[2J\033[3J\033[1;1H'"
     alias claer "printf '\033[2J\033[3J\033[1;1H'"
     alias pamcan pacman
-    alias rbt 'reboot'
-    alias pf 'poweroff'
     alias q 'qs -c ii'
     if test "$TERM" != "linux"
-        alias ls 'eza --icons'
+        alias ls 'eza --icons=auto'
     end
     if test "$TERM" = "xterm-kitty"
         alias ssh 'kitten ssh'

@@ -1,4 +1,4 @@
--- 配置具体的lsp for different language
+--配置具体的lsp for different language
 return {
 	{
 		"neovim/nvim-lspconfig",
@@ -90,7 +90,7 @@ return {
 				on_attach = on_attach,
 				settings = {
 					python = {
-						pythonPath = "./venv/bin/python", -- ⭐ 关键
+						pythonPath = ".venv/bin/python", -- ⭐ 关键
 						analysis = {
 							typeCheckingMode = "basic",
 							autoSearchPaths = true,

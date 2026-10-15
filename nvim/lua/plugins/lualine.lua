@@ -1,7 +1,7 @@
 return {
 	"nvim-lualine/lualine.nvim",
 	event = { "BufWinEnter" },
-	dependencier = {
+	dependencies = {
 		"nvim-tree/nvim-web-devicons",
 		"lewis6991/gitsigns.nvim",
 	},
@@ -27,12 +27,12 @@ return {
 					return username .. " @ " .. icon .. short_cwd .. trail .. " "
 				end,
 				icon = nil, -- 已经在函数中包含了图标
-				color = { fg = "#F39302", bold = true },
+				color = { fg = "#cba6f7", bold = true },
 			}
 		end
 
 		local function get_current_time()
-			return os.date("%Y-%m-%d %H:%M %A")
+			return os.date("%Y-%m-%d %H:%M %a")
 		end
 
 		-- 自定义 LSP 状态组件
@@ -72,12 +72,12 @@ return {
 			end
 
 			-- 如果有多个 LSP，显示数量和图标
-			return " " .. #lsp_names[1]
+			return " " .. #lsp_names
 		end
 
 		require("lualine").setup({
 			options = {
-				theme = "gruvbox", -- 自动检测主题
+				theme = "auto", -- 自动检测主题
 				-- component_separators = { left = "|", right = "|" },
 				-- component_separators = { left = "", right = "" },
 				-- section_separators = { left = "", right = "" },
@@ -114,12 +114,24 @@ return {
 			sections = {
 				lualine_a = { "mode" },
 				lualine_b = { "branch", "diff", "diagnostics" },
-				lualine_c = { "filename", workdir_component() },
+				lualine_c = {
+					{
+						"filename",
+						-- active buffer 文件名：亮青色 + 加粗
+						color = function()
+							if vim.fn.win_getid() == vim.g.statusline_winid then
+								return { fg = "#89dceb", bold = true } -- 活动窗口：亮青色
+							end
+							return { fg = "#6c7086" } -- 非活动窗口：暗灰色
+						end,
+					},
+					workdir_component(),
+				},
 				lualine_x = {
 					{
 						get_current_time,
 						icon = "󰥔 ", -- 时钟图标
-						color = { fg = "#150E7A" },
+						color = { fg = "#f38ba9" },
 					},
 					{
 						get_lsp_status,

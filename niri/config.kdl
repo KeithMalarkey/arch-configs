@@ -6,19 +6,21 @@ environment {
 	// 配置系统locale
 	// LC_MESSAGES "zh_CN.UTF-8"
 	LC_MESSAGES "en_US.UTF-8"
+	
 	// 添加系统代理
     ALL_PROXY "http://127.0.0.1:7897"
+	
 	// 为不同的图形应用适配fcitx输入法
-    GLFW_IM_MODULE "fcitx"
-    GTK_IM_MODULE "fcitx"
-    QT_IM_MODULE "fcitx"
-    XMODIFIERS "@im=fcitx"
-    SDL_IM_MODULE "fcitx"
+    GLFW_IM_MODULE "fcitx5"
+    GTK_IM_MODULE "fcitx5"
+    QT_IM_MODULE "fcitx5"
+    XMODIFIERS "@im=fcitx5"
+    SDL_IM_MODULE "fcitx5"
 }
 
 blur {
-	passes 3 
-	offset 3
+	passes 1 
+	offset 2
 	noise 0.02
 	saturation 1.5
 }
@@ -108,7 +110,8 @@ input {
     }
 
     // Uncomment this to make the mouse warp to the center of newly focused windows.
-    // warp-mouse-to-focus
+	// 鼠标跟随focus移动
+    warp-mouse-to-focus
 
     // Focus windows and outputs automatically when moving the mouse into them.
     // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
@@ -220,7 +223,8 @@ layout {
         // - CSS-like notation: "rgb(255, 127, 0)", rgba(), hsl() and a few others.
 
         // Color of the ring on the active monitor.
-        active-color "#7fc8ff"
+        active-color "#7ea0d8"
+        // active-color "#7fc8ff"
 
         // Color of the ring on inactive monitors.
         //
@@ -295,7 +299,7 @@ layout {
         offset x=0 y=5
 
         // You can also change the shadow color and opacity.
-        color "#0007"
+        color "#000007"
     }
 
     // Struts shrink the area occupied by windows, similarly to layer-shell panels.
@@ -324,8 +328,8 @@ spawn-at-startup "clash-verge"
 // 剪切板服务
 spawn-at-startup "cliphist" "daemon"
 spawn-at-startup "awww-daemon"
-spawn-at-startup "qs" "-c" "noctalia-shell"
-spawn-sh-at-startup "awww img ~/Pictures/wallpapers/animated/yor-forger-bloody-needles-spy-x-family-moewalls-com.gif" 
+spawn-at-startup "noctalia"
+spawn-sh-at-startup "awww img ~/Pictures/wallpapers/animated/yor-forger-bloody-needles-spy-x-family-moewalls-com.gif" // noctalia shell不支持动态壁纸,所以还是用awww用着
 // spawn-sh-at-startup "swaybg -i $HOME/Pictures/wallpapers/chillop/a_cartoon_of_a_girl_holding_a_glass_in_a_kitchen.png -m fill"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "mako"
@@ -411,12 +415,24 @@ animations {
 window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
-	opacity 0.9
+	// opacity 0.85
 	background-effect {
 		xray true
 		// 我不想模糊应用背景，我想看到壁纸,set true
-		// blur true
+		blur true
 	}
+}
+
+// 未激活窗口
+window-rule {
+	match is-active=true
+	opacity 1.0
+}
+
+// 激活窗口
+window-rule {
+	match is-active=false
+	opacity 0.85
 }
 
 debug {
@@ -446,22 +462,27 @@ binds {
 	// 重启niri
 	Mod+Alt+R hotkey-overlay-title="restart niri" { spawn-sh "niri msg action quit && exec niri-session"; }
 
+	// color picker
+	Mod+P hotkey-overlay-title="color picker" { spawn "hyprpicker" "-a"; }
+	// wallpaper selector 壁纸选择器
+	Mod+B hotkey-overlay-title="wallpaper selector" { spawn "noctalia" "msg" "panel-toggle" "wallpaper"; }
+	// notification history 提示历史查看
+	Mod+H hotkey-overlay-title="view past notifications" { spawn "noctalia" "msg" "panel-toggle" "control-center" "notifications"; }
+
     // Suggested binds for running programs: terminal, app launcher, screen locker.
 	// super + T 或者 super + enter 打开kitty终端模拟器
     Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     Mod+Return hotkey-overlay-title="Open tmux set up kitty" { spawn "kitty" "--" "zsh" "-c" "tmux attach -t main 2>/dev/null || tmux new -s main"; }
-	// 图形应用起动器
     // Mod+R hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-	Mod+R { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+	Mod+R hotkey-overlay-title="application launcher" { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
 
 	// Super + L锁屏
-    // Mod+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock" "-f" "-i" "$HOME/Pictures/wallpapers/minimal/a_cartoon_of_a_island_with_a_bridge_and_trees.jpg"; }
-	Mod+L { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+	Mod+L hotkey-overlay-title="lock screen" { spawn "noctalia" "msg" "session" "lock"; }
 	// 休眠映射
-	Mod+Shift+L {spawn "sh" "-c" "qs -c noctalia-shell ipc call lockScreen lock && sleep 0.1 && systemctl suspend";} 
+	Mod+Shift+L hotkey-overlay-title="suspend session of computer" {spawn "noctalia" "msg" "session" "lock-and-suspend";}
 	
 	// 快速打开chrome
-    Mod+W { spawn "google-chrome-stable"; } 
+    Mod+W hotkey-overlay-title="open browser (default: firefox)" { spawn "firefox"; } 
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
@@ -527,24 +548,24 @@ binds {
     Mod+Ctrl+Home { move-column-to-first; }
     Mod+Ctrl+End  { move-column-to-last; }
 
-	// 多显示器间的切换
-    Mod+Shift+Left  { focus-monitor-left; }
-    Mod+Shift+Down  { focus-monitor-down; }
-    Mod+Shift+Up    { focus-monitor-up; }
-    Mod+Shift+Right { focus-monitor-right; }
+	// 多显示器间的切换,暂时用不到
+    // Mod+Shift+Left  { focus-monitor-left; }
+    // Mod+Shift+Down  { focus-monitor-down; }
+    // Mod+Shift+Up    { focus-monitor-up; }
+    // Mod+Shift+Right { focus-monitor-right; }
     // Mod+Shift+H     { focus-monitor-left; }
     // Mod+Shift+J     { focus-monitor-down; }
     // Mod+Shift+K     { focus-monitor-up; }
     // Mod+Shift+L     { focus-monitor-right; }
 
-    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
-    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
-    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
-    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
-    Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
-    Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
-    Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
-    Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+    // Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    // Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    // Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    // Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+    // Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    // Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+    // Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+    // Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
 
     // Alternatively, there are commands to move just a single window:
     // Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
@@ -554,14 +575,14 @@ binds {
     // Mod+Shift+Ctrl+Left  { move-workspace-to-monitor-left; }
     // ...
 
-    Mod+Page_Down      { focus-workspace-down; }
-    Mod+Page_Up        { focus-workspace-up; }
+    // Mod+Page_Down      { focus-workspace-down; }
+    // Mod+Page_Up        { focus-workspace-up; }
     Mod+U              { focus-workspace-down; }
     Mod+I              { focus-workspace-up; }
-    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
-    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
-    Mod+Ctrl+U         { move-column-to-workspace-down; }
-    Mod+Ctrl+I         { move-column-to-workspace-up; }
+    // Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    // Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+    Mod+Alt+U         { move-column-to-workspace-down; }
+    Mod+Alt+I         { move-column-to-workspace-up; }
 
     // Alternatively, there are commands to move just a single window:
     // Mod+Ctrl+Page_Down { move-window-to-workspace-down; }
@@ -709,9 +730,8 @@ binds {
 	// 截图指定区域并复制到剪切板
 	Alt+A hotkey-overlay-title="screenshot of specific region and copy to clipboard" { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy"; } 
 	// 区域截图，同时保存并复制到剪贴板
-    Mod+Shift+A { spawn "sh" "-c" "FILENAME=\"$HOME/Pictures/screenshots/$(date +%Y%m%d-%H%M%S).png\" && grim -g \"$(slurp)\" \"$FILENAME\" && sleep 0.1 && wl-copy < \"$FILENAME\""; }
-	// 打开剪贴板历史，选择并复制到当前剪贴板
-    Mod+Alt+A { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "launcher" "clipboard"; } 
+    Mod+Shift+A hotkey-overlay-title="screenshot of specific region, saved as local file and copyed" { spawn "sh" "-c" "FILENAME=\"$HOME/Pictures/screenshots/$(date +%Y%m%d-%H%M%S).png\" && grim -g \"$(slurp)\" \"$FILENAME\" && sleep 0.1 && wl-copy < \"$FILENAME\""; }
+    Mod+Alt+H hotkey-overlay-title="show all history from clipboard" { spawn "noctalia" "msg" "panel-open" "clipboard"; } 
     Print { screenshot; }
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
@@ -737,3 +757,5 @@ binds {
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
 }
+
+include "noctalia.kdl"

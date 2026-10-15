@@ -32,6 +32,8 @@ vim.keymap.set("n", "<leader>c", function()
 		vim.cmd("close")
 	end
 end, { desc = "Close window/split or buffer" })
+-- 关闭所有缓冲区
+vim.keymap.set("n", "<leader>cb", "<cmd>%bd<cr>", { desc = "close all buffers" })
 -- 切换buffer
 vim.keymap.set("n", "[b", "<cmd>bp<cr>", { desc = "Previous Buffer" })
 vim.keymap.set("n", "]b", "<cmd>bn<cr>", { desc = "Next Buffer" })
@@ -62,16 +64,16 @@ local function resize_window(direction)
 		vim.cmd("resize +2")
 	end
 end
-vim.keymap.set("n", "<A-Left>", function()
+vim.keymap.set("n", "<C-Left>", function()
 	resize_window("left")
 end, { desc = "Decrease window width" })
-vim.keymap.set("n", "<A-Right>", function()
+vim.keymap.set("n", "<C-Right>", function()
 	resize_window("right")
 end, { desc = "Increase window width" })
-vim.keymap.set("n", "<A-Up>", function()
+vim.keymap.set("n", "<C-Up>", function()
 	resize_window("up")
 end, { desc = "Decrease window height" })
-vim.keymap.set("n", "<A-Down>", function()
+vim.keymap.set("n", "<C-Down>", function()
 	resize_window("down")
 end, { desc = "Increase window height" })
 
@@ -81,8 +83,8 @@ vim.keymap.set("n", "<C-t>n", "<cmd>tabnew<cr>", { desc = "[T]ab [N]ew" })
 vim.keymap.set("n", "<C-t>c", "<cmd>tabclose<cr>", { desc = "[T]ab [C]lose" })
 
 -- neotree
--- vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<cr>", { desc = "Toggle Neotree" })
--- vim.keymap.set("n", "<leader>on", "<cmd>Neotree focus<cr>", { desc = "Focus Neotree" })
+-- vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<cr>", { desc = "Toggle Neotree" }) # 同下
+vim.keymap.set("n", "<leader>on", "<cmd>Neotree focus<cr>", { desc = "Focus Neotree" })
 
 local function neotree_toggle_current()
 	local buf_path = vim.api.nvim_buf_get_name(0) -- 获取当前 buffer 路径
@@ -105,7 +107,22 @@ end
 vim.keymap.set("n", "<leader>fe", neotree_toggle_current, { desc = "Neotree (current buffer dir)" }) -- 打开当前buffer的根目录
 
 -- themes
-vim.keymap.set("n", "<leader>ft", "<cmd>Telescope colorscheme<CR>", { desc = " Find Installed Themes" })
+-- vim.keymap.set("n", "<leader>ft", "<cmd>Telescope colorscheme<CR>", { desc = " Find Installed Themes" })
+vim.keymap.set("n", "<leader>ft", function()
+	require("fzf-lua").fzf_exec(vim.fn.getcompletion("", "color"), {
+		actions = {
+			["default"] = function(selected)
+				vim.cmd("colorscheme " .. selected[1])
+			end,
+		},
+	})
+end, { desc = "switch colorscheme" })
+vim.keymap.set(
+	"n",
+	"<leader>fh",
+	"<cmd>FzfLua combine oldfiles git_files<cr>",
+	{ desc = "find recent history files and git files" }
+)
 
 -- lsp enhancement
 vim.keymap.set("n", "gd", function()
