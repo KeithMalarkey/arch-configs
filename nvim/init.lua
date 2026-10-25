@@ -32,8 +32,16 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
-require("lazy").setup("plugins")
+require("lazy").setup("plugins", {
+	-- 更新检查：定期 git fetch 检查插件更新（不会自动升级，升级仍需手动 :Lazy update）
+	-- 有更新时不弹通知，打开 :Lazy 窗口可见标记
+	checker = {
+		enabled = true,
+		frequency = 3600, -- 每小时检查一次
+		check_plugins = true,
+		notify = false,
+	},
+})
 
 -- 默认启动主题设置
 vim.cmd("colorscheme gruvbox")
--- vim.cmd("colorscheme catppuccin-mocha")
