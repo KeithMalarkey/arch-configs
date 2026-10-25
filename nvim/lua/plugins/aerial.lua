@@ -1,11 +1,7 @@
 return {
 	"stevearc/aerial.nvim",
-	dependencies = {
-		"nvim-treesitter/nvim-treesitter", -- Treesitter 后端需要
-		"nvim-tree/nvim-web-devicons",
-		"nvim-lspconfig", -- LSP 后端需要
-	},
-	-- 确保 aerial 在 treesitter 之后加载
+	-- treesitter / lspconfig 都有自己的顶层 spec，devicons 集中在 deps.lua，
+	-- 由 require 自动加载兜底，这里不再声明 dependencies
 	event = { "VeryLazy", "BufReadPost" },
 	config = function()
 		require("aerial").setup({

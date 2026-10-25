@@ -1,10 +1,7 @@
 return {
 	"nvim-lualine/lualine.nvim",
 	event = { "BufWinEnter" },
-	dependencies = {
-		"nvim-tree/nvim-web-devicons",
-		"lewis6991/gitsigns.nvim",
-	},
+	-- devicons 在 deps.lua、gitsigns 有自己的 spec，无需再声明依赖
 	config = function()
 		-- 确保 gitsigns 已加载（如果还没配置的话）
 		require("gitsigns").setup()
@@ -25,6 +22,7 @@ return {
 					local trail = cwd:sub(-1) == "/" and "" or "/"
 
 					return username .. " @ " .. icon .. short_cwd .. trail .. " "
+					-- return username .. " @ " .. icon .. cwd .. trail .. " "
 				end,
 				icon = nil, -- 已经在函数中包含了图标
 				color = { fg = "#cba6f7", bold = true },

@@ -1,12 +1,11 @@
 -- 该插件主要完成自动补全的功能(auto completions)
 return {
 	"saghen/blink.cmp",
-	-- optional: provides snippets for the snippet source
+	-- friendly-snippets（纯数据，无 lua 模块）和 lspkind（无独立 spec）必须保留依赖声明；
+	-- devicons 集中在 deps.lua、LuaSnip 有自己的 spec，由 require 自动加载兜底
 	dependencies = {
 		"rafamadriz/friendly-snippets",
 		"onsails/lspkind-nvim",
-		"nvim-tree/nvim-web-devicons",
-		"L3MON4D3/LuaSnip",
 	},
 
 	-- use a release tag to download pre-built binaries
@@ -50,7 +49,8 @@ return {
 			["<Down>"] = { "select_next", "fallback" },
 			["<CR>"] = { "accept", "fallback" },
 			["<Esc>"] = { "hide", "fallback" },
-			["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+			-- tmux 前缀是 C-Space，会把 <C-Space> 吃掉，这里改用 <C-.>
+			["<C-.>"] = { "show", "show_documentation", "hide_documentation" },
 			["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
 		},
 

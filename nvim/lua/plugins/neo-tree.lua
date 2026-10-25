@@ -3,11 +3,7 @@ return {
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"MunifTanjim/nui.nvim",
-			"nvim-tree/nvim-web-devicons",
-		},
+		-- plenary / nui / devicons 集中在 deps.lua，由 require 自动加载兜底
 		config = function()
 			require("neo-tree").setup({
 				filesystem = {
@@ -41,13 +37,7 @@ return {
 	},
 	{
 		"antosha417/nvim-lsp-file-operations",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			-- Uncomment whichever supported plugin(s) you use
-			-- "nvim-tree/nvim-tree.lua",
-			-- "nvim-neo-tree/neo-tree.nvim",
-			-- "simonmclean/triptych.nvim"
-		},
+		-- plenary 集中在 deps.lua
 		config = function()
 			require("lsp-file-operations").setup()
 		end,

@@ -38,10 +38,11 @@ vim.keymap.set("n", "<leader>cb", "<cmd>%bd<cr>", { desc = "close all buffers" }
 vim.keymap.set("n", "[b", "<cmd>bp<cr>", { desc = "Previous Buffer" })
 vim.keymap.set("n", "]b", "<cmd>bn<cr>", { desc = "Next Buffer" })
 -- 切换窗口
-vim.keymap.set({ "n", "v" }, "<C-h>", "<C-w>h", { desc = "go to the left window/split" })
-vim.keymap.set({ "n", "v" }, "<C-l>", "<C-w>l", { desc = "go to the right window/split" })
-vim.keymap.set({ "n", "v" }, "<C-j>", "<C-w>j", { desc = "go to the down window/split" })
-vim.keymap.set({ "n", "v" }, "<C-k>", "<C-w>k", { desc = "go to the up window/split" })
+-- normal 模式交给 vim-tmux-navigator（可跨 tmux pane），这里只补 visual 模式
+vim.keymap.set("v", "<C-h>", "<C-w>h", { desc = "go to the left window/split" })
+vim.keymap.set("v", "<C-l>", "<C-w>l", { desc = "go to the right window/split" })
+vim.keymap.set("v", "<C-j>", "<C-w>j", { desc = "go to the down window/split" })
+vim.keymap.set("v", "<C-k>", "<C-w>k", { desc = "go to the up window/split" })
 -- 分割窗口
 vim.keymap.set({ "n", "v" }, "<leader>|", "<cmd>vsplit<CR>", {
 	desc = "vertical split",

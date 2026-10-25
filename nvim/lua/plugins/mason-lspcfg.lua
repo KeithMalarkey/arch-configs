@@ -14,11 +14,10 @@ return {
 			"yamlls",
 			"ltex",
 			"jdtls",
+			"shuck",
+			"texlab",
 		},
 		automatic_enable = false,
 	},
-	dependencies = {
-		"mason-org/mason.nvim",
-		"neovim/nvim-lspconfig",
-	},
+	-- mason 和 nvim-lspconfig 都有自己的顶层 spec（config 里 require 时自动加载），无需声明依赖
 }
