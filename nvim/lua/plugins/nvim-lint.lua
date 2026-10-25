@@ -80,19 +80,50 @@ return {
 				json = { "jsonlint" },
 				sh = { "shellcheck" },
 				bash = { "shellcheck" },
-				zsh = { "shellcheck" },
+				-- shellcheck 不支持 zsh（会报一堆 SC2034/SC2148 之类的假警报），
+				-- 这里用 shuck 做真正的 zsh 语法/规范检查
+				zsh = { "shuck" },
 				markdown = { "vale" },
-				tex = { "vale" },
-				vimScript = { "vint" },
+				-- tex 用 vale_tex：先 texplain 剥离 LaTeX 标记再查
+				tex = { "vale_tex" },
+				vim = { "vint" },
 				yaml = { "yamllint" },
 			}
 
-			-- 自动命令：保存时检查
-			vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+			-- 自动命令：打开/保存/离开插入模式时检查，保证编辑时就能看到提示
+			vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "InsertLeave" }, {
 				callback = function()
 					require("lint").try_lint()
 				end,
 			})
+
+			-- 插件本身是在 BufReadPost 里加载的，当前这次打开事件已经过去了，
+			-- 这里补一次检查
+			vim.schedule(function()
+				require("lint").try_lint()
+			end)
 		end,
+	},
+	{
+		"rshkarin/mason-nvim-lint",
+		-- mason 和 nvim-lint 都有自己的顶层 spec，无需声明依赖
+		opts = {
+			-- 安装你想要的 Linter
+			ensure_installed = {
+				"luacheck",
+				"vale",
+				"bandit",
+				"cpplint",
+				"cmakelang",
+				"shellcheck",
+				"checkstyle",
+				"yamllint",
+				"jsonlint",
+				"vint",
+			},
+			-- 这几个不是 mason 包（自定义 linter 或 Rust 自带工具），
+			-- 不列出来的话每次启动都会弹 "absent in mason's registry" 警告
+			ignore_install = { "vale_tex", "clippy", "cmake_lint", "shuck" },
+		},
 	},
 }
